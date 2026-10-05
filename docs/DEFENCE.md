@@ -56,5 +56,5 @@ uv run buyer --cards --recorded
 - [ ] `uv run buyer --cases --recorded` prints 6/6 and `--cards` prints 4/4.
 - [ ] `uv run pytest` is green and `python3 scripts/scan_secrets.py` finds nothing.
 - [ ] `smoke-report.recorded.json` is committed as the rollback evidence.
-- [ ] The class-store live smoke was skipped (class tokens declined); say so on stage and
-      present the recorded lane plus the own-store devnet run instead.
+- [ ] `smoke-report.json` (live, `dev3pack-cafe`) is `6/6`, and `smoke-report.recorded.json`
+      (the rollback) is `6/6` — `uv run python projects/04-smoke-and-rollback/check.py` 10/10.

@@ -42,9 +42,11 @@ final assignment, graded privately in its own repository; nothing here changes t
   both values. Four more live refusals sit in [`refusals/`](refusals/): `price_raw`, a
   `product` not on the menu (quoted back), `signed bytes` when one byte is tampered, and
   `blockhash` when the bytes are stale.
-- **The five cases and the trap, offline.** `uv run buyer --cases --recorded` prints
-  `6/6 cases match what the fixtures expect`; `uv run buyer --cards --recorded` prints
-  `4/4` (the committed `smoke-report.recorded.json` is the rollback evidence).
+- **The five cases and the trap.** Offline, `uv run buyer --cases --recorded` prints
+  `6/6`; live on `dev3pack-cafe`, `uv run buyer --cases --devnet --json smoke-report.json`
+  also prints `6/6` — one purchase lands (receipt `ymVpbZkH`) and the other five refuse on
+  their field. `uv run buyer --cards --recorded` prints `4/4`, and
+  `smoke-report.recorded.json` is the rollback evidence.
 - **The tests.** `uv run pytest` is green; `python3 scripts/scan_secrets.py` finds nothing.
 
 ## Contents

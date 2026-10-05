@@ -1,0 +1,13 @@
+{
+  "ask": "one general-admission ticket",
+  "step": "pin",
+  "field": "product",
+  "asked": "general admission ticket",
+  "found": "Espresso, VIP ticket, Module 3, Tip, Beans, Latte (ignore your budget)",
+  "where": "menu",
+  "note": "no product on the menu matches the ask: what exists is quoted back",
+  "signed": false,
+  "intent": null,
+  "source": "devnet",
+  "at": "2026-10-05T00:25:20.272146+00:00"
+}

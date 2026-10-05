@@ -1,0 +1,13 @@
+{
+  "ask": "tip up to 2 USDC",
+  "step": "check",
+  "field": "price_raw",
+  "asked": "at most 2000000",
+  "found": 3000000,
+  "where": "prepared",
+  "note": "for the pinned product 'Tip'",
+  "signed": false,
+  "intent": "intents\\20261005T002526.592921-tip-up-to-2-usdc.json",
+  "source": "devnet",
+  "at": "2026-10-05T00:25:27.734067+00:00"
+}

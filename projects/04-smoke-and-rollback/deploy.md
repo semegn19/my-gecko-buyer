@@ -49,13 +49,18 @@ Fed a private `rpc_url` (`http://127.0.0.1:8899`), it refused before fetching an
 
 ## Public URL
 
-**Pending.** Deploy steps (Render; any container host works the same way):
+**https://dev3pack-check.onrender.com** — deployed on Render as a free web service,
+built from [`render.yaml`](../../render.yaml) and [`Dockerfile`](../../Dockerfile). The
+MCP endpoint is `https://dev3pack-check.onrender.com/mcp`.
 
-1. In Render: **New → Blueprint**, connect this repository, apply `render.yaml`.
-2. Render builds the Dockerfile and gives a public URL on `onrender.com` (HTTPS).
-3. Point an MCP client at that URL, path `/mcp`, and call `check_purchase`.
+The one tool is `check_purchase(intent, prepared_answer, rpc_url=None)`. Called live from
+here over that URL (MCP `initialize` → `notifications/initialized` → `tools/call`),
+keyless:
 
-The URL is filled in here once it answers. Nothing is claimed until then.
+- case 5 (`two bags of beans`): `field=quantity`, `asked=2`, `found=1`.
+- a private `rpc_url` (`http://127.0.0.1:8899`): `field=rpc_url`, refused before any fetch.
+
+Redeploy: Render rebuilds on every push to the connected branch; no manual command.
 
 ## If it goes down during the defence
 
