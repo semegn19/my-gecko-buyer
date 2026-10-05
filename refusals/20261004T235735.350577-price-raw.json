@@ -1,0 +1,13 @@
+{
+  "ask": "one espresso",
+  "step": "check",
+  "field": "price_raw",
+  "asked": "at most 500000",
+  "found": 1000000,
+  "where": "prepared",
+  "note": "for the pinned product 'Espresso'",
+  "signed": false,
+  "intent": "intents\\20261004T235733.805640-one-espresso.json",
+  "source": "devnet",
+  "at": "2026-10-04T23:57:35.354347+00:00"
+}

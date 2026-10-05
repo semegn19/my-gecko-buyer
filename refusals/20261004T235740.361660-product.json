@@ -1,0 +1,13 @@
+{
+  "ask": "one unicorn latte",
+  "step": "pin",
+  "field": "product",
+  "asked": "unicorn latte",
+  "found": "Espresso, Cookie, Beans",
+  "where": "menu",
+  "note": "no product on the menu matches the ask: what exists is quoted back",
+  "signed": false,
+  "intent": null,
+  "source": "devnet",
+  "at": "2026-10-04T23:57:40.361660+00:00"
+}

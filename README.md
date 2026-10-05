@@ -23,7 +23,33 @@ key and signs nothing: your signer does.
 This is your capstone project, presented on **Friday 2 October**. The certificate is the
 final assignment, graded privately in its own repository; nothing here changes that grade.
 
+## Evidence, in four commands
+
+- **The landing.** `uv run buyer "one espresso" --devnet` from my store `dev3semegn19`
+  ([`uoMyXcc4…`](https://explorer.solana.com/address/uoMyXcc4H522pT1niLmuWLdCEuVTUKYsBd8DoiaZxcB?cluster=devnet))
+  wrote [`receipts/2bjKMqbt.md`](receipts/2bjKMqbt.md):
+  [tx `2bjKMqbt…`](https://explorer.solana.com/tx/2bjKMqbtg6YKe653XB9JiPqV4PtUZBHK34n9jJgSaYCtxtE17x6sNSFH4jJZ3DUNkrkf1YAbkTcuUmftedq9BPBP?cluster=devnet),
+  buyer delta −1000000, store delta +1000000, `total_purchases` 0 to 1 — from two ledger
+  reads, not from what `submit_transaction` said.
+- **A refusal.**
+
+  ```
+  REFUSED on quantity: asked 2, prepared 1
+  Nothing was signed.
+  ```
+
+  Live on devnet, `refusals/<stamp>-quantity.json` keeps the ask, the step, the field and
+  both values. Four more live refusals sit in [`refusals/`](refusals/): `price_raw`, a
+  `product` not on the menu (quoted back), `signed bytes` when one byte is tampered, and
+  `blockhash` when the bytes are stale.
+- **The five cases and the trap, offline.** `uv run buyer --cases --recorded` prints
+  `6/6 cases match what the fixtures expect`; `uv run buyer --cards --recorded` prints
+  `4/4` (the committed `smoke-report.recorded.json` is the rollback evidence).
+- **The tests.** `uv run pytest` is green; `python3 scripts/scan_secrets.py` finds nothing.
+
 ## Contents
+
+- [Evidence, in four commands](#evidence-in-four-commands)
 
 - [Start here](#start-here)
 - [The five use cases](#the-five-use-cases)

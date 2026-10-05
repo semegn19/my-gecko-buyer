@@ -1,9 +1,22 @@
 {
-  "store": "dev3octocat",
+  "store": "dev3semegn19",
   "telegram_channel": "",
   "products": [
-    {"name": "Espresso", "price_raw": 1000000, "mint": "own"},
-    {"name": "Cookie", "price_raw": 2500000, "mint": "own"},
-    {"name": "Beans", "price_raw": 4000000, "mint": "own"}
-  ]
+    {
+      "name": "Espresso",
+      "price_raw": 1000000,
+      "mint": "own"
+    },
+    {
+      "name": "Cookie",
+      "price_raw": 2500000,
+      "mint": "own"
+    },
+    {
+      "name": "Beans",
+      "price_raw": 4000000,
+      "mint": "own"
+    }
+  ],
+  "address": "uoMyXcc4H522pT1niLmuWLdCEuVTUKYsBd8DoiaZxcB"
 }

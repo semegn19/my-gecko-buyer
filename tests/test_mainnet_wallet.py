@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import os
 import stat
 from pathlib import Path
 from typing import Any
@@ -32,6 +33,9 @@ CHALLENGE = "dev3pack 2026-09 class wallet 7f3a91 expires 2026-10-02T12:00:00Z"
 @pytest.fixture
 def home(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     monkeypatch.setenv("HOME", str(tmp_path))
+    # On Windows `Path.home()` reads USERPROFILE and ignores HOME, so pin it outright:
+    # every test here must write its wallet under tmp_path, never the real ~/.config.
+    monkeypatch.setattr(Path, "home", lambda: tmp_path)
     monkeypatch.delenv("DEV3PACK_HOME", raising=False)
     monkeypatch.setenv("GECKO_API_KEY", GECKO_KEY)
     return tmp_path
@@ -88,7 +92,10 @@ def test_create_makes_a_600_key_outside_the_repo_and_prints_only_the_address(
     home: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
     key, out = created(home, capsys)
-    assert stat.S_IMODE(key_file(home).stat().st_mode) == 0o600
+    # Windows has no POSIX permission bits: chmod only toggles the read-only flag, so the
+    # 0600 guarantee (owner-only) is asserted where the OS can express it.
+    if os.name == "posix":
+        assert stat.S_IMODE(key_file(home).stat().st_mode) == 0o600
     assert str(key.pubkey()) in out
     assert str(list(bytes(key))) not in out
     assert str(key) not in out  # the base58 secret form, too

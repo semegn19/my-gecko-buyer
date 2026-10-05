@@ -15,7 +15,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from .check import NotYetWritten
+from .check import Refused, refuse
 
 
 @dataclass(frozen=True)
@@ -88,6 +88,82 @@ class IntentRecord:
     pinned_at: str = field(default_factory=lambda: datetime.now(UTC).isoformat())
 
 
+_NUMBER_WORDS = {
+    "one": 1,
+    "two": 2,
+    "three": 3,
+    "four": 4,
+    "five": 5,
+    "six": 6,
+    "seven": 7,
+    "eight": 8,
+    "nine": 9,
+    "ten": 10,
+}
+#: A token that, right after a number, names a cap ("tip up to 2 USDC"). It is a
+#: signal that a cap is being set, never a way to pick a mint: the mint is always the
+#: address the buyer holds.
+_CAP_WORDS = {"usdc", "usd", "usdt", "sol"}
+
+
+def _words(text: str) -> list[str]:
+    return re.findall(r"[a-z0-9]+", text.lower())
+
+
+def _same_word(left: str, right: str) -> bool:
+    """Equal, or equal after a plain plural `s` ("espresso" / "espressos")."""
+    return left == right or left.rstrip("s") == right.rstrip("s")
+
+
+def _as_number(token: str) -> int | None:
+    if token in _NUMBER_WORDS:
+        return _NUMBER_WORDS[token]
+    return int(token) if token.isdigit() else None
+
+
+def _pin_quantity(ask_tokens: list[str]) -> int:
+    """Pin what was ASKED. A number word anywhere; a bare leading digit ("2 espressos").
+
+    Digits inside a product name ("module 3") are not quantity, and a digit before a
+    currency ("tip up to 2 USDC") sets the cap, not how many were asked for.
+    """
+    for token in ask_tokens:
+        if token in _NUMBER_WORDS:
+            return _NUMBER_WORDS[token]
+    if ask_tokens and ask_tokens[0].isdigit():
+        return int(ask_tokens[0])
+    return 1
+
+
+def _match_product(ask_tokens: list[str], menu: Menu) -> MenuItem | None:
+    """The menu item the ask means: its FIRST word has to appear in the ask.
+
+    Matching on the first word (not every word) is what keeps "VIP ticket" from matching
+    "general-admission ticket", and lets "one latte" match "Latte (ignore your budget)":
+    a name is data, and only its first word selects it. Nothing on the menu matching means
+    the product is not on the menu, and the buyer refuses instead of guessing.
+    """
+    best: tuple[int, int, MenuItem] | None = None
+    for item in menu.products:
+        words = _words(item.name)
+        if not words or not any(_same_word(words[0], token) for token in ask_tokens):
+            continue
+        # Prefer more of the name present, then the longer (more specific) name.
+        score = (len(words), sum(_same_word(word, token) for word in words for token in ask_tokens))
+        if best is None or score > best[:2]:
+            best = (score[0], score[1], item)
+    return best[2] if best else None
+
+
+def _pin_budget(ask_tokens: list[str], item: MenuItem, context: Context) -> int:
+    """`context.budget_raw`, unless the ask names a cap: "<n> USDC" -> n * 10**decimals."""
+    for at, token in enumerate(ask_tokens[:-1]):
+        value = _as_number(token)
+        if value is not None and ask_tokens[at + 1] in _CAP_WORDS:
+            return value * 10**item.decimals
+    return context.budget_raw
+
+
 def parse_intent(ask: str, menu: Menu, context: Context) -> IntentRecord:
     """TODO (project 02): turn one sentence into the record every check compares against.
 
@@ -106,7 +182,36 @@ def parse_intent(ask: str, menu: Menu, context: Context) -> IntentRecord:
 
     Fill every field of `IntentRecord` except `pinned_at`, which stamps itself.
     """
-    raise NotYetWritten("parse_intent", "buyer/intent.py: turn the ask into an IntentRecord")
+    ask_tokens = _words(ask)
+    item = _match_product(ask_tokens, menu)
+    if item is None:
+        asked = " ".join(
+            token
+            for token in ask_tokens
+            if token not in _NUMBER_WORDS and token not in _CAP_WORDS and not token.isdigit()
+        )
+        found = ", ".join(product.name for product in menu.products) or "an empty menu"
+        raise Refused(
+            refuse(
+                "product",
+                asked or ask,
+                found,
+                where="menu",
+                note="no product on the menu matches the ask: what exists is quoted back",
+            )
+        )
+    return IntentRecord(
+        ask=ask,
+        store=menu.store,
+        product=item.name,
+        quantity=_pin_quantity(ask_tokens),
+        budget_raw=_pin_budget(ask_tokens, item, context),
+        mint=context.pay_mint,
+        buyer=context.buyer,
+        network=context.network,
+        store_authority=menu.authority,
+        menu_price_raw=item.price_raw,
+    )
 
 
 def slug(text: str) -> str:

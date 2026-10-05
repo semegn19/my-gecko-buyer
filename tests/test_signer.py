@@ -167,6 +167,7 @@ def test_the_mainnet_lane_reads_the_registered_wallet_and_defaults_to_the_cap(
     """`--mainnet` with no key flag and no budget flag: the wallet `mainnet_wallet.py create`
     made, capped at 300000. Built offline; nothing is prepared, signed or sent."""
     monkeypatch.setenv("HOME", str(tmp_path))
+    monkeypatch.setattr(Path, "home", lambda: tmp_path)  # Windows: USERPROFILE overrides HOME
     monkeypatch.delenv("DEV3PACK_HOME", raising=False)
     key = Keypair()
     wallet = mainnet_wallet_path()
@@ -185,6 +186,7 @@ def test_the_mainnet_lane_without_a_wallet_says_create_it(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     monkeypatch.setenv("HOME", str(tmp_path))
+    monkeypatch.setattr(Path, "home", lambda: tmp_path)  # Windows: USERPROFILE overrides HOME
     monkeypatch.delenv("DEV3PACK_HOME", raising=False)
     args = cli.build_parser().parse_args(
         ["one espresso", "--mainnet", "--store", "geckocoffee", "--out", str(tmp_path)]

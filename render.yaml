@@ -1,0 +1,10 @@
+# Render blueprint: one keyless web service, deployed from this repository's Dockerfile.
+services:
+  - type: web
+    name: dev3pack-check
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    envVars:
+      - key: PORT
+        value: 8000
