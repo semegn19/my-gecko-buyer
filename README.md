@@ -23,7 +23,7 @@ key and signs nothing: your signer does.
 This is your capstone project, presented on **Friday 2 October**. The certificate is the
 final assignment, graded privately in its own repository; nothing here changes that grade.
 
-## Evidence, in four commands
+## What I built
 
 - **The landing.** `uv run buyer "one espresso" --devnet` from my store `dev3semegn19`
   ([`uoMyXcc4…`](https://explorer.solana.com/address/uoMyXcc4H522pT1niLmuWLdCEuVTUKYsBd8DoiaZxcB?cluster=devnet))
@@ -48,6 +48,19 @@ final assignment, graded privately in its own repository; nothing here changes t
   their field. `uv run buyer --cards --recorded` prints `4/4`, and
   `smoke-report.recorded.json` is the rollback evidence.
 - **The tests.** `uv run pytest` is green; `python3 scripts/scan_secrets.py` finds nothing.
+
+## Key links (verified 2026-10-05)
+
+- Own store `dev3semegn19`: [`store/store.json`](store/store.json),
+  [`uoMyXcc4H522pT1niLmuWLdCEuVTUKYsBd8DoiaZxcB`](https://explorer.solana.com/address/uoMyXcc4H522pT1niLmuWLdCEuVTUKYsBd8DoiaZxcB?cluster=devnet).
+- Receipt (own store): [`receipts/2bjKMqbt.md`](receipts/2bjKMqbt.md),
+  [tx `2bjKMqbt…`](https://explorer.solana.com/tx/2bjKMqbtg6YKe653XB9JiPqV4PtUZBHK34n9jJgSaYCtxtE17x6sNSFH4jJZ3DUNkrkf1YAbkTcuUmftedq9BPBP?cluster=devnet).
+- Receipt (class-store smoke): [`receipts/ymVpbZkH.md`](receipts/ymVpbZkH.md),
+  [tx `ymVpbZkH…`](https://explorer.solana.com/tx/ymVpbZkHrg8YFvUkbt1pYRtF6z4ETAnbM2CAbcNp5ao7f1tBYdgCrbsmbwfjyF4JxVXdemkXmPZatz9Sg6YiZ4U?cluster=devnet).
+- Defence script and checklist: [`docs/DEFENCE.md`](docs/DEFENCE.md).
+- Measured this session: `pytest` 107 passed, 2 skipped; `buyer --cases --recorded` 6/6;
+  `buyer --cards --recorded` 4/4; `smoke-report.json` 6/6; `smoke-report.recorded.json` 6/6;
+  project checks 12/12, 10/10, 10/10; `scan_secrets` 128 files clean.
 
 ## Contents
 
